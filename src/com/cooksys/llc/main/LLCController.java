@@ -2,7 +2,6 @@ package com.cooksys.llc.main;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.springframework.boot.SpringApplication;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,7 +20,7 @@ public class LLCController {
 		return "test";
 	}
 	
-	@RequestMapping("/")
+	@RequestMapping("/test")
 	public Test test(@RequestParam(value="name", defaultValue="World") String name) {
 		return new Test(counter.incrementAndGet(), String.format(template, name));
 	}
