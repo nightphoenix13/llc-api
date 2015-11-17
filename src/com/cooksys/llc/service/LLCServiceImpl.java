@@ -8,7 +8,7 @@ import redis.clients.jedis.ScanResult;
 
 public class LLCServiceImpl implements LLCService {
 
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings({ "rawtypes", "deprecation" })
 	@Override
 	public List getZipCodesByCountyName(String countyName) {
 		List list = new ArrayList();
