@@ -12,7 +12,6 @@ public class Application {
 	private static final Logger logger = LoggerFactory.getLogger(Application.class);
 
 	public static void main(String[] args) {
-<<<<<<< HEAD
 //		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
 //		ctx.register(AppConfig.class);
 //		ctx.refresh();
@@ -29,13 +28,11 @@ public class Application {
 //		System.out.println(stringRedisTemplate.opsForHash().get("M", String.valueOf(mohan.hashCode())));
 		Object[] sources = { Application.class, AppConfig.class };
 		ApplicationContext ctx = SpringApplication.run(sources, args);
-=======
 		
 		logger.info("llc-api - About to launch application");
 		
 		SpringApplication.run(Application.class, args);
 		
 		logger.info("llp-api - Application launched");
->>>>>>> refs/remotes/origin/master
 	}
 }
