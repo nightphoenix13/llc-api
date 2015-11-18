@@ -10,14 +10,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/")
 public class LLCController {
 
 	private static final String template = "Hello, %s!";
 	private final AtomicLong counter = new AtomicLong();
 	
 	@RequestMapping(value="/zips/by/stateCounty/TX/Travis", method=RequestMethod.POST)
-	public @ResponseBody String zipsByStateCounty(@RequestBody String string){
+	public String zipsByStateCounty(@RequestBody String string){
 		return "test";
 	}
 	
