@@ -8,11 +8,22 @@ import org.springframework.context.ApplicationContext;
 
 import com.cooksys.insertion.RedisInsertion;
 
+/**
+ * Application class is the Spring Boot starter class. Execution of the main method starts
+ * the embedded Tomcat server, starts the application, and loads data into redis.
+ * @author Dustin Baugh, Zack Rosales
+ * 
+ */
 @SpringBootApplication
 public class Application {
 
+	// SLF4J logger
 	private static final Logger logger = LoggerFactory.getLogger(Application.class);
 
+	/**
+	 * Starting point of the application. Starts Tomcat server and loads data into redis. 
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		
 //		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
