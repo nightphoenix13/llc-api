@@ -6,13 +6,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 
+import com.cooksys.insertion.RedisInsertion;
+
 @SpringBootApplication
 public class Application {
 
 	private static final Logger logger = LoggerFactory.getLogger(Application.class);
 
 	public static void main(String[] args) {
-		
 		
 //		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
 //		ctx.register(AppConfig.class);
@@ -33,6 +34,7 @@ public class Application {
 		
 		Object[] sources = { Application.class, AppConfig.class };
 		ApplicationContext ctx = SpringApplication.run(sources, args);
+		RedisInsertion.loadRedisData();
 		
 		logger.info("llp-api - Application launched");
 	
