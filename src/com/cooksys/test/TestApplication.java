@@ -10,7 +10,7 @@ public class TestApplication {
 	public static void main(String[] args) {
 		Object[] sources = {TestApplication.class , TestAppConfig.class };
 		ApplicationContext ctx = SpringApplication.run(sources, args);
-		TestService service = new TestService();
-		service.setUser(new User("1", "dustin", "dustin@dustin.com"));
+//		TestService service = new TestService();
+//		service.setUser(new User("1", "dustin", "dustin@dustin.com"));
 	}
 }

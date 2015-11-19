@@ -8,10 +8,12 @@ import org.springframework.context.ApplicationContext;
 
 @SpringBootApplication
 public class Application {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(Application.class);
 
 	public static void main(String[] args) {
+		
+		
 //		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
 //		ctx.register(AppConfig.class);
 //		ctx.refresh();
@@ -26,13 +28,13 @@ public class Application {
 //		String mohan = "Mohan";
 //		stringRedisTemplate.opsForHash().put("M", String.valueOf(mohan.hashCode()), mohan);
 //		System.out.println(stringRedisTemplate.opsForHash().get("M", String.valueOf(mohan.hashCode())));
+
+		logger.info("llc-api - About to launch application");
+		
 		Object[] sources = { Application.class, AppConfig.class };
 		ApplicationContext ctx = SpringApplication.run(sources, args);
 		
-		logger.info("llc-api - About to launch application");
-		
-		SpringApplication.run(Application.class, args);
-		
 		logger.info("llp-api - Application launched");
+	
 	}
 }
