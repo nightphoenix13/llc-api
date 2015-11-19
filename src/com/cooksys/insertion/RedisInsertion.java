@@ -4,8 +4,6 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,7 +51,7 @@ public class RedisInsertion {
 		jedis.flushAll();
 		
 		// map of county codes and names
-		Map<String, String> countyMap = getCounties();
+		CountyInfo countyInfo = getCounties();
 		
 		try {
 			
@@ -73,7 +71,7 @@ public class RedisInsertion {
 					String[] county = line.split(splitBy);
 					
 					// gets county name from countyMap
-					String str = countyMap.get(county[0]).replace(" County", "");
+					String str = countyInfo.getCountyName();
 					
 					// adds county to redis.
 					jedis.sadd("county:" + str, county[1]);
@@ -99,7 +97,7 @@ public class RedisInsertion {
 	 * getCounties method compiles a Map of county numbers and names from data source
 	 * @return Map of county numbers and names, respectively.
 	 */
-	private static Map<String, String> getCounties(){
+	private static CountyInfo getCounties(){
 		
 		// reader to read file
 		BufferedReader reader = null;
@@ -110,8 +108,8 @@ public class RedisInsertion {
 		// delimiter to split line by
 		String splitBy = ",";
 		
-		// HashMap for storing county data
-		Map<String, String> countyMap = new HashMap();
+		// CountyInfo object to hold county data
+		CountyInfo countyInfo = new CountyInfo();
 		
 		try {
 			
@@ -124,8 +122,10 @@ public class RedisInsertion {
 				// splits line into String array 
 				String[] county = line.split(splitBy);
 				
-				// stores county number and name, respectively, to map
-				countyMap.put(county[1] + county[2], county[3]);
+				// stores county info in CountyInfo class;
+				countyInfo.setState(county[0]);
+				countyInfo.setCountyNumber(county[1] + county[2]);
+				countyInfo.setCountyName(county[3]);
 			}
 		} catch (FileNotFoundException e) {
 			logger.error("File Not Found: " + e);
@@ -142,10 +142,10 @@ public class RedisInsertion {
 		}
 		
 		// if map is empty, return null instead of empty map
-		if (countyMap.isEmpty())
+		if (countyInfo.getCountyName() == null || countyInfo.getCountyName().isEmpty())
 			return null;
 		
 		// returns county map
-		return countyMap;
+		return countyInfo;
 	}
 }
