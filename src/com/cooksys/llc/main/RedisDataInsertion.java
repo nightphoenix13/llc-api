@@ -1,4 +1,4 @@
-package com.cooksys.insertion;
+package com.cooksys.llc.main;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -23,10 +23,10 @@ public class RedisDataInsertion {
 	private static final String COUNTY_FILE = "national_county.txt";
 	private static final String ZIP_FILE = "COUNTY_ZIP_062015.csv";
 	@Autowired
-	private static RedisTemplate<String, String> template;
+	private RedisTemplate<String, String> template;
 	private static final Logger logger = LoggerFactory.getLogger(RedisDataInsertion.class);
 	
-	public static void redisDataInsertion() {
+	public void redisDataInsertion() {
 		Jedis jedis = new Jedis("localhost", 6379);
 		jedis.flushAll();
 		int count = 0;

@@ -6,8 +6,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 
-import com.cooksys.insertion.RedisDataInsertion;
-
 /**
  * Application class is the Spring Boot starter class. Execution of the main method starts
  * the embedded Tomcat server, starts the application, and loads data into redis.
@@ -43,9 +41,10 @@ public class Application {
 
 		logger.info("llc-api - About to launch application");
 		
-		Object[] sources = { Application.class, AppConfig.class };
-		ApplicationContext ctx = SpringApplication.run(sources, args);
-		RedisDataInsertion.redisDataInsertion();
+//		Object[] sources = { Application.class, AppConfig.class };
+		ApplicationContext ctx = SpringApplication.run(Application.class, args);
+		RedisDataInsertion rdi = ctx.getBean(RedisDataInsertion.class);
+		rdi.redisDataInsertion();
 		
 		logger.info("llp-api - Application launched");
 	

@@ -10,7 +10,7 @@ import com.cooksys.llc.main.ZipCode;
 @Service("ZipCodeService")
 public class ZipCodeServiceImpl implements ZipCodeService {
 
-	@Autowired
+//	@Autowired
 	private RedisTemplate<String, ZipCode> redisTemplate;
 	
 	
