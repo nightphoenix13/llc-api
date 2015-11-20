@@ -1,12 +1,10 @@
 package com.cooksys.llc.main;
 
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,14 +25,14 @@ public class LLCController {
 	private final Logger logger = LoggerFactory.getLogger(LLCController.class);
 	
 	@RequestMapping(value="/zips/by/stateCounty/{state}/{county}", method=RequestMethod.GET)
-	public Set<String> zipsByStateCounty(@PathVariable("state") String state,
+	public String zipsByStateCounty(@PathVariable("state") String state,
 			@PathVariable("county") String county){
 		
 		logger.info("llc-api - Rest call to /zips/by/stateCounty/{state}/{county} received");
 		
 		Jedis jedis = new Jedis("localhost", 6379);
 		
-		return jedis.smembers(state + "_" + county);
+		return jedis.hget(state + "_" + county, "zipCodes");
 	}
 	
 	@RequestMapping("/test")

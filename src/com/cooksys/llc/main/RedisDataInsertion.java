@@ -10,7 +10,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -32,15 +31,10 @@ public class RedisDataInsertion {
 		int count = 0;
 		Map<String, String> countyMap = getCounties();
 		Map<String, String> zipMap = getZips();
-		logger.info("countyMap size: " + countyMap.size() + " zipMap size: " + zipMap.size());
-		insertToRedis(countyMap, zipMap);
 		for (String countyKey : countyMap.keySet()) {
-			logger.info("in for loop for countyMap: " + countyKey);
 			String zips = "";
 			for (String zipKey : zipMap.keySet()) {
-				logger.info(countyMap.get(countyKey) + " " + zipMap.get(zipKey));
 				if (countyMap.get(countyKey).equals(zipMap.get(zipKey))) {
-					logger.info("made it here");
 					if (zips.isEmpty()) {
 						zips = zips + zipKey;
 					} else {
@@ -48,16 +42,10 @@ public class RedisDataInsertion {
 					}
 				}
 			}
-			logger.info("Entering into redis - Key: " + countyKey + " Value: " + zips);
 			template.opsForHash().put(countyKey, "zipCodes", zips);
 			count++;
 		}
 		logger.info(count + " counties loaded.");
-	}
-	
-	private static void insertToRedis(Map<String, String> countyMap, Map<String, String> zipMap) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	private static Map<String, String> getZips() {
@@ -69,7 +57,6 @@ public class RedisDataInsertion {
 			reader = new BufferedReader(new FileReader(DIRECTORY + ZIP_FILE));
 			while ((line = reader.readLine()) != null) {
 				String[] zip = line.split(splitBy);
-				logger.info("Adding to zipMap - Key: " + zip[1] + " Value: " + zip[0]);
 				zipMap.put(zip[1], zip[0]);
 			}
 		} catch (FileNotFoundException e) {
@@ -102,7 +89,6 @@ public class RedisDataInsertion {
 				String[] county = line.split(splitBy);
 				key = county[0] + "_" + county[3];
 				key = key.substring(0, key.length() - 6);
-				logger.info("Adding to countyMap - Key: " + key + " Value: " + county[1] + county[2]);
 				countyMap.put(key, county[1] + county[2]);
 			} 
 		} catch (FileNotFoundException e) {
