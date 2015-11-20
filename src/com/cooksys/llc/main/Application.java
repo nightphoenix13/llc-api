@@ -6,7 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 
-import com.cooksys.insertion.RedisInsertion;
+import com.cooksys.insertion.TravisCountyInsertion;
 
 /**
  * Application class is the Spring Boot starter class. Execution of the main method starts
@@ -45,7 +45,7 @@ public class Application {
 		
 		Object[] sources = { Application.class, AppConfig.class };
 		ApplicationContext ctx = SpringApplication.run(sources, args);
-		RedisInsertion.loadRedisData();
+		TravisCountyInsertion.insertDataToRedis();
 		
 		logger.info("llp-api - Application launched");
 	

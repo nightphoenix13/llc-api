@@ -1,9 +1,11 @@
 package com.cooksys.llc.main;
 
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -12,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cooksys.llc.service.ZipCodeService;
 import com.cooksys.llc.service.ZipCodeServiceImpl;
+
+import redis.clients.jedis.Jedis;
 
 @RestController
 public class LLCController {
@@ -22,12 +26,15 @@ public class LLCController {
 	private final AtomicLong counter = new AtomicLong();
 	private final Logger logger = LoggerFactory.getLogger(LLCController.class);
 	
-	@RequestMapping(value="/zips/by/stateCounty/{state}/{county}", method=RequestMethod.POST)
-	public String zipsByStateCounty(@RequestBody String string){
+	@RequestMapping(value="/zips/by/stateCounty/{state}/{county}", method=RequestMethod.GET)
+	public Set<String> zipsByStateCounty(@PathVariable("state") String state,
+			@PathVariable("county") String county){
 		
 		logger.info("llc-api - Rest call to /zips/by/stateCounty/{state}/{county} received");
 		
-		return "test";
+		Jedis jedis = new Jedis("localhost", 6379);
+		
+		return jedis.smembers(state + "_" + county);
 	}
 	
 	@RequestMapping("/test")
