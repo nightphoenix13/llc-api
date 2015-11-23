@@ -27,11 +27,10 @@ public class AppConfig {
 	}
 	
 	@Bean
-	public RedisTemplate<String, Object> redisTemplate() {
-		final RedisTemplate<String, Object> template = new RedisTemplate<String, Object>();
+	public RedisTemplate<String, String> redisTemplate() {
+		final RedisTemplate<String, String> template = new RedisTemplate<String, String>();
 		template.setConnectionFactory(jedisConnectionFactory());
 		template.afterPropertiesSet();
 		return template;
 	}
-
 }

@@ -15,15 +15,19 @@ import org.springframework.stereotype.Service;
 
 import redis.clients.jedis.Jedis;
 
-@Service("redisDataInsertion")
-public class RedisDataInsertion {
+@Service("redisService")
+public class RedisService {
 
+	@Autowired
+	private RedisTemplate<String, String> template;
 	private static final String DIRECTORY = "src/main/resources/";
 	private static final String COUNTY_FILE = "national_county.txt";
 	private static final String ZIP_FILE = "COUNTY_ZIP_062015.csv";
-	@Autowired
-	private RedisTemplate<String, String> template;
-	private static final Logger logger = LoggerFactory.getLogger(RedisDataInsertion.class);
+	private static final Logger logger = LoggerFactory.getLogger(RedisService.class);
+	
+	public String getZipsByStateCounty(String stateCounty) {
+		return (String) template.opsForHash().get(stateCounty, "zipCodes");
+	}
 	
 	public void redisDataInsertion() {
 		Jedis jedis = new Jedis("localhost", 6379);
