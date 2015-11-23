@@ -2,6 +2,7 @@ package com.cooksys.llc.main;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
@@ -17,7 +18,7 @@ public class Application {
 
 	// SLF4J logger
 	private static final Logger logger = LoggerFactory.getLogger(Application.class);
-
+	
 	/**
 	 * Starting point of the application. Starts Tomcat server and loads data into redis. 
 	 * @param args
@@ -43,8 +44,9 @@ public class Application {
 		
 //		Object[] sources = { Application.class, AppConfig.class };
 		ApplicationContext ctx = SpringApplication.run(Application.class, args);
+		RedisService service = new RedisService();
+		service.redisDataInsertion();
 		
 		logger.info("llp-api - Application launched");
-	
 	}
 }

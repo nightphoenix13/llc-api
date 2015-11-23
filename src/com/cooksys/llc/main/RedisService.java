@@ -5,12 +5,11 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import redis.clients.jedis.Jedis;
@@ -18,98 +17,69 @@ import redis.clients.jedis.Jedis;
 @Service("redisService")
 public class RedisService {
 
-	@Autowired
-	private RedisTemplate<String, String> template;
-	private static final String DIRECTORY = "src/main/resources/";
-	private static final String COUNTY_FILE = "national_county.txt";
-	private static final String ZIP_FILE = "COUNTY_ZIP_062015.csv";
+	private static final String FILE = "src/main/resources/combined_list.txt";
 	private static final Logger logger = LoggerFactory.getLogger(RedisService.class);
+	private static Integer index = 0; 
 	
-	public String getZipsByStateCounty(String stateCounty) {
-		return (String) template.opsForHash().get(stateCounty, "zipCodes");
+	public List<String> getZipsByStateCounty(String stateCounty) {
+		Jedis jedis = new Jedis("localhost", 6379);
+		List<String> output = jedis.hmget(stateCounty, "zipCodes");
+		jedis.close();
+		return output;
 	}
 	
 	public void redisDataInsertion() {
 		Jedis jedis = new Jedis("localhost", 6379);
 		jedis.flushAll();
-		int count = 0;
-		Map<String, String> countyMap = getCounties();
-		Map<String, String> zipMap = getZips();
-		for (String countyKey : countyMap.keySet()) {
-			String zips = "";
-			for (String zipKey : zipMap.keySet()) {
-				if (countyMap.get(countyKey).equals(zipMap.get(zipKey))) {
-					if (zips.isEmpty()) {
-						zips = zips + zipKey;
-					} else {
-						zips = zips + ", " + zipKey;
-					}
-				}
-			}
-			template.opsForHash().put(countyKey, "zipCodes", zips);
-			count++;
+		Map<String, String> countyZipMap = getMapFromFile();
+		for (String key : countyZipMap.keySet()) {
+			Map<String, String> zipMap = new HashMap<String, String>();
+			zipMap.put("zipCodes", countyZipMap.get(key));
+			jedis.hmset(key, zipMap);
 		}
-		logger.info(count + " counties loaded.");
+		jedis.close();
 	}
 
-	private static Map<String, String> getZips() {
+	private Map<String, String> getMapFromFile() {
+		Map<String, String> countyZipMap = new HashMap<String, String>();
+		Integer count = new Integer(0);
 		BufferedReader reader = null;
 		String line = "";
-		String splitBy = ",";
-		Map<String, String> zipMap = new HashMap<String, String>();
 		try {
-			reader = new BufferedReader(new FileReader(DIRECTORY + ZIP_FILE));
+			reader = new BufferedReader(new FileReader(FILE));
 			while ((line = reader.readLine()) != null) {
-				String[] zip = line.split(splitBy);
-				zipMap.put(zip[1], zip[0]);
+				String key = getStateCountyKey(line);
+				String zips = line.substring(index + 2);
+				countyZipMap.put(key, zips);
+				count++;
 			}
 		} catch (FileNotFoundException e) {
-			logger.error("File not found: " + e);
+			logger.error("File Not Found: " + e);
 		} catch (IOException e) {
-			logger.error("Failed reading from file: " + e);
+			logger.error("Failed Reading File: " + e);
 		} finally {
 			try {
-				if (reader != null) {
-					reader.close();
-				}
+				reader.close();
 			} catch (IOException e) {
-				logger.error("Failed closing BufferedReader: " + e);
+				logger.error("Failed Closing File: " + e);
 			}
 		}
-		if (zipMap.isEmpty())
-			return null;
-		return zipMap;
+		logger.info("State-County map completed. " + count + " records added.");
+		return countyZipMap;
 	}
-	
-	private static Map<String, String> getCounties() {
-		BufferedReader reader = null;
-		String key = "";
-		String line = "";
-		String splitBy = ",";
-		Map<String, String> countyMap = new HashMap<String, String>();
-		try {
-			reader = new BufferedReader(new FileReader(DIRECTORY + COUNTY_FILE));
-			while ((line = reader.readLine())!= null) {
-				String[] county = line.split(splitBy);
-				key = county[0] + "_" + county[3];
-				key = key.substring(0, key.length() - 6);
-				countyMap.put(key, county[1] + county[2]);
-			} 
-		} catch (FileNotFoundException e) {
-			logger.error("File not found: " + e);
-		} catch (IOException e) {
-			logger.error("Failed reading from file: " + e);
-		} finally {
-			if (reader != null) {
-				try {
-					reader.close();
-				} catch (IOException e) {
-					logger.error("Failed closing BufferedReader: " + e);
-				}
+
+	private String getStateCountyKey(String line) {
+		Boolean foundSpace = false;
+		String stateCounty = "";
+		for (int x = 0; x < line.length() - 1 && !foundSpace; x++) {
+			Character ch = line.charAt(x);
+			if (!Character.isWhitespace(ch)) {
+				stateCounty = stateCounty + ch;
+			} else {
+				index = x;
+				foundSpace = true;
 			}
 		}
-		if (countyMap.isEmpty())
-			return null;
-		return countyMap;
+		return stateCounty;
 	}
 }

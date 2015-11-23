@@ -1,5 +1,7 @@
 package com.cooksys.llc.main;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +20,14 @@ public class LLCController {
 	private RedisService service = new RedisService();
 	
 	@RequestMapping(value="/zips/by/stateCounty/{state}/{county}", method=RequestMethod.GET)
-	public String zipsByStateCounty(@PathVariable("state") String state,
+	public List<String> zipsByStateCounty(@PathVariable("state") String state,
 			@PathVariable("county") String county){
 		
 		logger.info("llc-api - Rest call to /zips/by/stateCounty/{state}/{county} received");
 		
-		String output = service.getZipsByStateCounty(state + "_" + county);
+		List<String> output = service.getZipsByStateCounty(state + "_" + county);
 		
-		logger.info(output);
+		logger.info(output.toString());
 		
 		return output;
 	}

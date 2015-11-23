@@ -25,12 +25,4 @@ public class AppConfig {
 		ob.afterPropertiesSet();
 		return ob;
 	}
-	
-	@Bean
-	public RedisTemplate<String, String> redisTemplate() {
-		final RedisTemplate<String, String> template = new RedisTemplate<String, String>();
-		template.setConnectionFactory(jedisConnectionFactory());
-		template.afterPropertiesSet();
-		return template;
-	}
 }
