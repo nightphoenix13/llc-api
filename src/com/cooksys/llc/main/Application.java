@@ -45,7 +45,7 @@ public class Application {
 //		Object[] sources = { Application.class, AppConfig.class };
 		ApplicationContext ctx = SpringApplication.run(Application.class, args);
 		RedisService service = new RedisService();
-		service.redisDataInsertion();
+		service.getMapFromFile();
 		
 		logger.info("llp-api - Application launched");
 	}
